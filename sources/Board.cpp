@@ -107,9 +107,9 @@ namespace pandemic
                                           "Tehran",
                                           "Tokyo", "Washington"};
 
-    vector<uint> levels(NUM_OF_CITIES, ZERO);
-    vector<bool> cures_founded(NUM_OF_DISEASES, false);
-    vector<bool> have_research_station(NUM_OF_CITIES, false);
+    // vector<uint> levels(NUM_OF_CITIES, ZERO);
+    // vector<bool> cures_founded(NUM_OF_DISEASES, false);
+    // vector<bool> have_research_station(NUM_OF_CITIES, false);
     const vector<Color> color_for_city = {Black, Blue, Black, Red, Red, Yellow, Yellow, Black, Black, Blue, Black, Blue, Red, Red, Black, Red, Yellow, Black, Yellow, Yellow, Black, Yellow, Yellow, Blue, Yellow, Blue, Red, Yellow, Yellow, Blue, Blue, Black, Black, Blue, Red, Blue, Black, Blue, Yellow, Yellow, Red, Red, Blue, Red, Red, Black, Red, Blue};
 
     uint &Board::operator[](City city)
@@ -122,12 +122,12 @@ namespace pandemic
         for (int i = ZERO; i < NUM_OF_CITIES; i++)
         {
 
-            outstream << "The level of " << cities_as_string.at(i) << " is " << levels.at(i) << endl;
+            outstream << "The level of " << cities_as_string.at(i) << " is " << board.levels.at(i) << endl;
         }
         outstream << " Cures Discovered for: " << endl;
         for (int i = ZERO; i < NUM_OF_DISEASES; i++)
         {
-            if (cures_founded.at(i))
+            if (board.cures_founded.at(i))
             {
                 outstream << int_to_color(i) << " ";
             }
@@ -137,7 +137,7 @@ namespace pandemic
 
         for (int i = ZERO; i < NUM_OF_CITIES; i++)
         {
-            if (have_research_station.at(i))
+            if (board.have_research_station.at(i))
             {
                 outstream << int_to_city(i) << " ";
             }

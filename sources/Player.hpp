@@ -11,17 +11,24 @@ namespace pandemic
     class Player
     {
     private:
-        vector<vector<Color>> cards_by_colors;
+        vector<vector<City>> cards_by_colors;
         Board &board;
         City current_city;
+        bool have_the_card(City city);
+        void update_research_station(City city);
+        void remove_card(City city);
+        bool has_station(City city);
+        bool has_cure(City city);
+        vector<City> cards_for_this_color(City city);
 
     public:
+        //need to check if its possible through the initialization list
         Player(Board &board, City begin_at_city) : board(board), current_city(begin_at_city)
         {
-            vector<vector<Color>> cards;
+            vector<vector<City>> cards;
             for (int i = ZERO; i < NUM_OF_DISEASES; i++)
             {
-                vector<Color> color_array;
+                vector<City> color_array;
                 cards.push_back(color_array);
             }
             this->cards_by_colors = cards;
@@ -35,5 +42,6 @@ namespace pandemic
         virtual Player &take_card(City city);
         virtual Player &drive(City city);
         virtual string role();
+        void remove_cards();
     };
 }
