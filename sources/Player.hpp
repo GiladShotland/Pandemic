@@ -10,16 +10,17 @@ namespace pandemic
 
     class Player
     {
-    private:
-        vector<vector<City>> cards_by_colors;
-        Board &board;
-        City current_city;
+    protected:
         bool have_the_card(City city);
         void update_research_station(City city);
         void remove_card(City city);
         bool has_station(City city);
         bool has_cure(City city);
+        Board &board;
+        City current_city;
+        vector<vector<City>> cards_by_colors;
         vector<City> cards_for_this_color(City city);
+        void update_cure(Color color);
 
     public:
         //need to check if its possible through the initialization list

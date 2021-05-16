@@ -13,9 +13,13 @@ namespace pandemic
     const int NUM_OF_CITIES = 48;
     class Board
     {
+
+    protected:
+        vector<bool> cures_founded;
+
     private:
         vector<uint> levels;
-        vector<bool> cures_founded;
+
         vector<bool> have_research_station;
 
     public:

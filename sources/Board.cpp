@@ -114,18 +114,18 @@ namespace pandemic
 
     uint &Board::operator[](City city)
     {
-        int index_of_city = city_to_int(city);
+        uint index_of_city = city_to_int(city);
         return levels[index_of_city];
     }
     ostream &operator<<(ostream &outstream, const Board &board)
     {
-        for (int i = ZERO; i < NUM_OF_CITIES; i++)
+        for (uint i = ZERO; i < NUM_OF_CITIES; i++)
         {
 
             outstream << "The level of " << cities_as_string.at(i) << " is " << board.levels.at(i) << endl;
         }
         outstream << " Cures Discovered for: " << endl;
-        for (int i = ZERO; i < NUM_OF_DISEASES; i++)
+        for (uint i = ZERO; i < NUM_OF_DISEASES; i++)
         {
             if (board.cures_founded.at(i))
             {
@@ -135,7 +135,7 @@ namespace pandemic
         outstream << endl;
         outstream << " Research Stations built at : " << endl;
 
-        for (int i = ZERO; i < NUM_OF_CITIES; i++)
+        for (uint i = ZERO; i < NUM_OF_CITIES; i++)
         {
             if (board.have_research_station.at(i))
             {
@@ -148,7 +148,7 @@ namespace pandemic
     //boolean method not allowed to change anything in the object
     bool Board::is_clean()
     {
-        for (int i = ZERO; i < NUM_OF_CITIES; i++)
+        for (uint i = ZERO; i < NUM_OF_CITIES; i++)
         {
             if (this->levels.at(i) > 0)
             {
@@ -159,7 +159,7 @@ namespace pandemic
     }
     void Board::remove_cures()
     {
-        for (int i = ZERO; i < NUM_OF_DISEASES; i++)
+        for (uint i = ZERO; i < NUM_OF_DISEASES; i++)
         {
             this->cures_founded.at(i) = false;
         }

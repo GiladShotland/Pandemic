@@ -1,4 +1,5 @@
 #pragma once
+
 namespace pandemic
 {
     enum City
@@ -53,11 +54,11 @@ namespace pandemic
         Washington,
     };
 
-    int city_to_int(City city)
+    unsigned int city_to_int(City city)
     {
-        return static_cast<int>(city);
+        return static_cast<unsigned int>(city);
     }
-    City int_to_city(int city_id)
+    City int_to_city(unsigned int city_id)
     {
         return static_cast<City>(city_id);
     }

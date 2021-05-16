@@ -9,11 +9,11 @@ namespace pandemic
         Red,
         Black
     };
-    int color_to_int(Color color)
+    unsigned int color_to_int(Color color)
     {
-        return static_cast<int>(color);
+        return static_cast<unsigned int>(color);
     }
-    Color int_to_color(int color)
+    Color int_to_color(unsigned int color)
     {
         return static_cast<Color>(color);
     }
