@@ -9,7 +9,7 @@ namespace pandemic
         int num_of_cards;
 
     public:
-        Scientist(Board b, City c, int num_of_cards) : Player(b, c), num_of_cards(num_of_cards){};
+        Scientist(Board &b, City c, int num) : Player(b, c) { this->num_of_cards = num; };
         Scientist &discover_cure(Color color);
         string role();
     };

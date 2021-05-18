@@ -8,7 +8,7 @@ namespace pandemic
     }
     OperationsExpert &OperationsExpert::build()
     {
-        update_research_station(current_city);
+        this->update_research_station(current_city);
         return *this;
     }
 }

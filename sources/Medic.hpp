@@ -9,7 +9,7 @@ namespace pandemic
         void medic_arrived();
 
     public:
-        Medic(Board b, City c) : Player(b, c){};
+        Medic(Board &b, City c) : Player(b, c){};
         Medic &fly_direct(City destination);
         Medic &fly_shuttle(City destination);
         Medic &fly_charter(City destination);

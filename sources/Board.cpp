@@ -1,15 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include "Color.hpp"
-#include "City.hpp"
+// #include "Color.hpp"
+// #include "City.hpp"
 #include "Board.hpp"
 using namespace std;
 namespace pandemic
 
 {
 
-    static const unordered_map<City, set<City>> adj_list{
+    unordered_map<City, vector<City>> Board::adj_list{
         {Algiers, {Madrid, Paris, Istanbul, Cairo}},
         {Atlanta, {Chicago, Miami, Washington}},
         {Baghdad, {Tehran, Istanbul, Cairo, Riyadh, Karachi}},
@@ -107,15 +107,12 @@ namespace pandemic
                                           "Tehran",
                                           "Tokyo", "Washington"};
 
-    // vector<uint> levels(NUM_OF_CITIES, ZERO);
-    // vector<bool> cures_founded(NUM_OF_DISEASES, false);
-    // vector<bool> have_research_station(NUM_OF_CITIES, false);
-    const vector<Color> color_for_city = {Black, Blue, Black, Red, Red, Yellow, Yellow, Black, Black, Blue, Black, Blue, Red, Red, Black, Red, Yellow, Black, Yellow, Yellow, Black, Yellow, Yellow, Blue, Yellow, Blue, Red, Yellow, Yellow, Blue, Blue, Black, Black, Blue, Red, Blue, Black, Blue, Yellow, Yellow, Red, Red, Blue, Red, Red, Black, Red, Blue};
+    vector<Color> Board::color_for_city = {Black, Blue, Black, Red, Red, Yellow, Yellow, Black, Black, Blue, Black, Blue, Red, Red, Black, Red, Yellow, Black, Yellow, Yellow, Black, Yellow, Yellow, Blue, Yellow, Blue, Red, Yellow, Yellow, Blue, Blue, Black, Black, Blue, Red, Blue, Black, Blue, Yellow, Yellow, Red, Red, Blue, Red, Red, Black, Red, Blue};
 
-    uint &Board::operator[](City city)
+    int &Board::operator[](uint city)
     {
-        uint index_of_city = city_to_int(city);
-        return levels[index_of_city];
+        uint index_of_city = static_cast<unsigned int>(city);
+        return levels[city];
     }
     ostream &operator<<(ostream &outstream, const Board &board)
     {
@@ -125,23 +122,27 @@ namespace pandemic
             outstream << "The level of " << cities_as_string.at(i) << " is " << board.levels.at(i) << endl;
         }
         outstream << " Cures Discovered for: " << endl;
-        for (uint i = ZERO; i < NUM_OF_DISEASES; i++)
+        for (const auto &p : board.cures_founded)
         {
-            if (board.cures_founded.at(i))
+            const auto &key = p.first;
+            const auto &val = p.second;
+            if (p.second)
             {
-                outstream << int_to_color(i) << " ";
+                outstream << key << " ";
             }
         }
         outstream << endl;
         outstream << " Research Stations built at : " << endl;
-
-        for (uint i = ZERO; i < NUM_OF_CITIES; i++)
+        for (const auto &p : board.have_research_station)
         {
-            if (board.have_research_station.at(i))
+            const auto &key = p.first;
+            const auto &val = p.second;
+            if (p.second)
             {
-                outstream << int_to_city(i) << " ";
+                outstream << key << " ";
             }
         }
+
         outstream << endl;
         return outstream;
     }
@@ -159,10 +160,22 @@ namespace pandemic
     }
     void Board::remove_cures()
     {
-        for (uint i = ZERO; i < NUM_OF_DISEASES; i++)
-        {
-            this->cures_founded.at(i) = false;
-        }
+        cures_founded.clear();
+        cures_founded.insert({Blue, false});
+        cures_founded.insert({Yellow, false});
+        cures_founded.insert({Red, false});
+        cures_founded.insert({Black, false});
+    }
+    bool Board::has_cure(Color disease)
+    {
+        return this->cures_founded.at(disease);
+    }
+    void Board::set_cure(Color disease)
+    {
+        this->cures_founded.at(disease) = true;
+    }
+    bool Board::got_station(City city){
+        return this->have_research_station.at(city);
     }
 
 }

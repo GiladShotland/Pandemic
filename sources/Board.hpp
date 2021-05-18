@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "City.hpp"
+#include "Color.hpp"
 #include <unordered_map>
 #include <set>
 #include <vector>
@@ -15,20 +16,37 @@ namespace pandemic
     {
 
     protected:
-        vector<bool> cures_founded;
+        unordered_map<City, bool> have_research_station;
+        unordered_map<Color, bool> cures_founded;
+        static unordered_map<City, vector<City>> adj_list;
+        static vector<Color> color_for_city;
 
     private:
-        vector<uint> levels;
-
-        vector<bool> have_research_station;
+        vector<int> levels;
 
     public:
-        Board() : levels(NUM_OF_CITIES, ZERO), cures_founded(NUM_OF_DISEASES, false), have_research_station(NUM_OF_CITIES, false){};
+        Board() : levels(NUM_OF_CITIES, ZERO)
+        {
+
+            cures_founded.insert({Blue, false});
+            cures_founded.insert({Yellow, false});
+            cures_founded.insert({Red, false});
+            cures_founded.insert({Black, false});
+            for (uint i = ZERO; i < NUM_OF_CITIES; i++)
+            {
+                this->have_research_station.insert({static_cast<City>(i), false});
+            }
+        };
+        ~Board() {}
         friend class Player;
-        uint &operator[](City city);
+
+        int &operator[](uint city);
         bool is_clean();
         void remove_cures();
         friend ostream &operator<<(ostream &outstream, const Board &board);
+        bool has_cure(const Color disease);
+        void set_cure(const Color disease);
+        bool got_station(City city);
     };
 
 };

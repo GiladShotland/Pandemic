@@ -54,13 +54,13 @@ namespace pandemic
         Washington,
     };
 
-    unsigned int city_to_int(City city)
-    {
-        return static_cast<unsigned int>(city);
-    }
-    City int_to_city(unsigned int city_id)
-    {
-        return static_cast<City>(city_id);
-    }
+    // unsigned int city_to_int(City city)
+    // {
+    //     return static_cast<unsigned int>(city);
+    // }
+    // City int_to_city(unsigned int city_id)
+    // {
+    //     return static_cast<City>(city_id);
+    // }
 
 }

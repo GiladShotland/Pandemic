@@ -1,20 +1,20 @@
 #include <iostream>
-#include "City.hpp"
+// #include "City.hpp"
 #include "Player.hpp"
-#include "Board.cpp"
+
 #include <algorithm>
 using namespace std;
 
 namespace pandemic
 {
-    const uint NUM_OF_CARDS_FOR_CURING = 5;
+
     Player &Player::drive(City city)
     {
         if (this->current_city == city)
         {
             throw logic_error("can't drive to the same city!");
         }
-        if (adj_list.at(current_city).find(city) == adj_list.at(current_city).end())
+        if (!have_road(city))
         {
             throw logic_error("Can't drive to that city - there is no road between your currnt city and the given city");
         }
@@ -28,13 +28,12 @@ namespace pandemic
             throw logic_error("can't drive to the same city!");
         }
 
-        vector<City> cards_at_this_city_color = cards_for_this_color(destination);
-        vector<City>::iterator iter = find(cards_at_this_city_color.begin(), cards_at_this_city_color.end(), destination);
-        if (iter == cards_at_this_city_color.end())
+        set<City>::iterator iter = find(cards.begin(), cards.end(), destination);
+        if (iter == cards.end())
         {
             throw logic_error("cant fly to that city - you don't have the card!");
         }
-        cards_at_this_city_color.erase(iter);
+        cards.erase(destination);
         this->current_city = destination;
         return *this;
     }
@@ -44,15 +43,12 @@ namespace pandemic
         {
             throw logic_error("can't fly to your city");
         }
-        if (!have_the_card(this->current_city))
+        set<City>::iterator iter = find_the_card(destination);
+        if (iter == cards.end())
         {
             throw logic_error("cant fly to that city - you don't have the card!");
         }
-
-        vector<City> cards_at_this_city_color = cards_for_this_color(this->current_city);
-        uint current_city_as_index = city_to_int(this->current_city);
-        vector<City>::iterator iter = find(cards_at_this_city_color.begin(), cards_at_this_city_color.end(), current_city_as_index);
-        cards_at_this_city_color.erase(iter);
+        cards.erase(destination);
         this->current_city = destination;
         return *this;
     }
@@ -76,8 +72,9 @@ namespace pandemic
     Player &Player::build()
     {
 
-        if (have_the_card(this->current_city))
+        if (has_card(this->current_city))
         {
+
             update_research_station(current_city);
             remove_card(current_city); //remove the card
             return *this;
@@ -90,27 +87,49 @@ namespace pandemic
         {
             throw logic_error("This city doesn't have a research stations!");
         }
-        uint color_as_index = color_to_int(color);
-        vector<City> cities_for_color = cards_by_colors.at(color_as_index);
-        if (cities_for_color.size() < NUM_OF_CARDS_FOR_CURING)
-        {
-            throw logic_error("you don't have enough cards from this color!");
-        }
-        for (uint i = ZERO; i < NUM_OF_CARDS_FOR_CURING; i++)
-        {
-            cities_for_color.pop_back();
-        }
+        find_n_and_erase(color, NUM_OF_CARDS_FOR_CURING);
         update_cure(color);
         return *this;
     }
+    bool Player::find_n_and_erase(Color color, int n)
+    {
+        vector<City> temp;
+        int counter = ZERO;
+        for (const auto &card : cards)
+        {
+            uint card_as_index = static_cast<uint>(card);
+            if (Board::color_for_city.at(card_as_index) == color)
+            {
+                temp.push_back(card);
+                remove_card(card);
+                counter++;
+            }
+            if (counter == n)
+            {
+                break;
+            }
+        }
+
+        if (counter < n)
+        {
+            for (auto &card : temp)
+            {
+                cards.insert(card);
+            }
+            throw logic_error("You don't have enough cards from this color!");
+        }
+        return true;
+    }
+
     Player &Player::treat(City city)
     {
         if (city != this->current_city)
         {
             throw logic_error("you need to treat your current city");
         }
-        if (this->board[city] == 0)
+        if (this->board[this->current_city] == ZERO)
         {
+
             throw logic_error("cant treat a healthy city");
         }
         this->board[city] = has_cure(city) ? 0 : --this->board[city];
@@ -119,66 +138,75 @@ namespace pandemic
     string Player::role() { return ""; }
     Player &Player::take_card(City city)
     {
-        vector<City> cards = cards_for_this_color(city);
-        cards.push_back(city);
 
+        this->cards.insert(city);
         return *this;
     }
-    bool Player::have_the_card(City city)
+    set<City>::iterator Player::find_the_card(City city)
     {
-
-        vector<City> cards_at_this_city_color = cards_for_this_color(city);
-        uint current_city_as_index = city_to_int(city);
-        vector<City>::iterator iter = find(cards_at_this_city_color.begin(), cards_at_this_city_color.end(), current_city_as_index);
-
-        return iter != cards_at_this_city_color.end();
+        set<City>::iterator it;
+        it = cards.find(city);
+        return it;
     }
+    bool Player::check_the_card(City city)
+    {
+        return find_the_card(city) != cards.end();
+    }
+    bool Player ::has_card(City city)
+    {
+        return this->cards.find(city) != this->cards.end();
+    }
+
     void Player::update_research_station(City city)
     {
-        uint city_as_int = city_to_int(city);
-        this->board.have_research_station.at(city_as_int) = true;
+
+        this->board.have_research_station.find(city)->second = true;
     }
 
     void Player::remove_card(City city)
     {
+        cards.erase(city);
+    }
 
-        vector<City> cards_at_this_city_color = cards_for_this_color(city);
-        uint current_city_as_index = city_to_int(city);
-        vector<City>::iterator iter = find(cards_at_this_city_color.begin(), cards_at_this_city_color.end(), current_city_as_index);
-        cards_at_this_city_color.erase(iter);
-    }
-    vector<City> Player::cards_for_this_color(City city)
-    {
-        uint city_as_index = city_to_int(city);
-        Color color_of_city = color_for_city.at(city_as_index);
-        uint color_index = color_to_int(color_of_city);
-        vector<City> cards_at_this_city_color = this->cards_by_colors.at(color_index);
-        return cards_at_this_city_color;
-    }
     bool Player::has_station(City city)
     {
-        uint city_as_index = city_to_int(city);
-        return this->board.have_research_station.at(city_as_index);
+
+        return this->board.got_station(city);
     }
     bool Player::has_cure(City city)
 
     {
-        uint city_as_index = city_to_int(city);
-        Color color_of_city = color_for_city.at(city_as_index);
-        uint color_as_index = color_to_int(color_of_city);
-        return this->board.cures_founded.at(color_as_index);
+        uint city_as_index = static_cast<uint>(city);
+        Color color_of_city = Board::color_for_city.at(city_as_index);
+        return this->board.has_cure(color_of_city);
     }
     void Player::remove_cards()
     {
-        for (uint i = ZERO; i < NUM_OF_DISEASES; i++)
-        {
-            this->cards_by_colors.at(i).clear();
-        }
+        cards.clear();
     }
     void Player::update_cure(Color color)
     {
-        uint color_as_index = color_to_int(color);
-        this->board.cures_founded.at(color_as_index) = true;
+        this->board.set_cure(color);
     }
+    bool Player::have_road(City city)
+    {
+        vector<City> neighbors = Board::adj_list.at(this->current_city);
 
+        for (City neighbor : Board::adj_list.at(this->current_city))
+        {
+            if (neighbor == city)
+            {
+
+                return true;
+            }
+        }
+        // for (unsigned int i = ZERO; i < this->board.adj_list.at(this->current_city); i++)
+        // {
+        //     if (this->board.adj_list.at(this->current_city).at(i) == city)
+        //     {
+        //         return true;
+        //     }
+        // }
+        return false;
+    }
 }

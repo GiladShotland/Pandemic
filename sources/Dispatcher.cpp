@@ -12,7 +12,7 @@ namespace pandemic
         {
             throw logic_error("can't fly to the same city!");
         }
-        if (!this->has_station(city))
+        if (!has_station(city))
         {
             throw logic_error("city has no research station!");
         }

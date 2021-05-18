@@ -46,11 +46,11 @@ StudentTest2.cpp:  # Eyal Levi
 # StudentTest3.cpp:  # Achiya Zigler
 # 	curl https://raw.githubusercontent.com/achiyazigi/Pandemic-Game/main/Test.cpp > $@
 
-tidy:
-	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
+# tidy:
+# 	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
 
-valgrind: test1 
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test1 2>&1 | { egrep "lost| at " || true; }
+# valgrind: test1 
+# 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test1 2>&1 | { egrep "lost| at " || true; }
 
 clean:
 	rm -f $(OBJECTS) *.o test* demo*

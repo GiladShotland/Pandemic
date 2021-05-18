@@ -1,6 +1,6 @@
 #include "GeneSplicer.hpp"
-#include "Player.cpp"
-#include "Board.hpp"
+#include "Player.hpp"
+
 using namespace std;
 namespace pandemic
 {
@@ -19,18 +19,15 @@ namespace pandemic
         {
             throw logic_error("This city doesn't have a research stations!");
         }
-        if (!num_of_elements(this->cards_by_colors))
+        if (cards.size() < NUM_OF_CARDS_FOR_CURING)
         {
             throw logic_error("You don't have enough cards!");
         }
-        int cards_throwed = ZERO;
 
-        for (uint i = ZERO; i < NUM_OF_DISEASES && cards_throwed < NUM_OF_CARDS_FOR_CURING; i++)
+        for (uint i = ZERO; i < NUM_OF_CARDS_FOR_CURING; i++)
         {
-            while (cards_throwed<NUM_OF_CARDS_FOR_CURING &&this->cards_by_colors.at(i).size()> ZERO)
-            {
-                cards_by_colors.at(i).pop_back();
-            }
+
+            cards.erase(cards.begin());
         }
         this->update_cure(color);
         return *this;

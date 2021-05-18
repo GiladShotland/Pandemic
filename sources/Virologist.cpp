@@ -6,7 +6,7 @@ namespace pandemic
     string Virologist::role() { return "Virologist"; }
     Virologist &Virologist::treat(City city)
     {
-        if (!have_the_card(city))
+        if (!check_the_card(city))
         {
             throw logic_error("You can't treat without having the card of the city!");
         }

@@ -7,7 +7,7 @@ namespace pandemic
     {
     private:
     public:
-        FieldDoctor(Board b, City c) : Player(b, c){};
+        FieldDoctor(Board &b, City c) : Player(b, c){};
         FieldDoctor &treat(City city);
         string role();
     };
