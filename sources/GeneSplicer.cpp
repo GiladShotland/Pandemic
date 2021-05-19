@@ -1,35 +1,45 @@
 #include "GeneSplicer.hpp"
 #include "Player.hpp"
+#include<set>
+
 
 using namespace std;
 namespace pandemic
 {
-    bool num_of_elements(vector<vector<City>> matrix)
-    {
-        int counter = ZERO;
-        for (uint i = ZERO; i < matrix.size(); i++)
-        {
-            counter += matrix.at(i).size();
-        }
-        return counter >= NUM_OF_CARDS_FOR_CURING;
-    }
     GeneSplicer &GeneSplicer::discover_cure(Color color)
     {
-        if (!has_station(this->current_city))
+
+        if (this->board.has_cure(color))
         {
-            throw logic_error("This city doesn't have a research stations!");
+            return *this;
         }
         if (cards.size() < NUM_OF_CARDS_FOR_CURING)
         {
-            throw logic_error("You don't have enough cards!");
+            throw logic_error("you dont have enough cards");
         }
-
-        for (uint i = ZERO; i < NUM_OF_CARDS_FOR_CURING; i++)
+        if (!this->board.got_station(this->current_city))
         {
-
-            cards.erase(cards.begin());
+            throw logic_error("you need a research station in your city");
         }
-        this->update_cure(color);
+        int counter = ZERO;
+        set<City>::iterator it = cards.begin();
+        while (it != cards.end())
+        {
+            
+            
+                it = this->cards.erase(it);
+                counter++;
+                it++;
+                
+            
+            if (counter == NUM_OF_CARDS_FOR_CURING)
+                {
+                    break;
+                }
+            
+        }
+        this->board.set_cure(color);
+
         return *this;
     }
 

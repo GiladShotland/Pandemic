@@ -11,16 +11,26 @@ namespace pandemic
     }
     FieldDoctor &FieldDoctor::treat(City city)
     {
-        if (have_road(city))
+        if (!Board::areNeighbors(this->current_city, city) && this->current_city != city)
         {
-            throw logic_error("there is no way to drive to the city you want to treat!");
+            throw logic_error("you dont have road to this city");
         }
         if (this->board[city] == ZERO)
         {
-
-            throw logic_error("cant treat healthy city");
+            throw logic_error("cant treat a healthy city");
         }
-        this->board[city] = has_cure(city) ? 0 : board[city] - 1;
+        if (this->board.has_cure(this->board.get_color_for_city(city)) )
+        {
+
+            this->board[city] = ZERO;
+        }
+        
+        else
+        {
+            this->board[city]--;
+        }
+
         return *this;
     }
+
 }

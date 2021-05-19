@@ -37,20 +37,20 @@ $(OBJECT_PATH)/%.o: $(SOURCE_PATH)/%.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
 
-# StudentTest1.cpp:  # Alomg Jakov Maatuf
-# 	curl https://raw.githubusercontent.com/AlmogJakov/Pandemic/main/Test.cpp > $@
+StudentTest1.cpp:  # Alomg Jakov Maatuf
+	curl https://raw.githubusercontent.com/AlmogJakov/Pandemic/main/Test.cpp > $@
 
 StudentTest2.cpp:  # Eyal Levi
 	curl https://raw.githubusercontent.com/LeviEyal/Pandemic-Game/main/Test.cpp > $@
 
-# StudentTest3.cpp:  # Achiya Zigler
-# 	curl https://raw.githubusercontent.com/achiyazigi/Pandemic-Game/main/Test.cpp > $@
+StudentTest3.cpp:  # Achiya Zigler
+	curl https://raw.githubusercontent.com/achiyazigi/Pandemic-Game/main/Test.cpp > $@
 
-# tidy:
-# 	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
+tidy:
+	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
 
-# valgrind: test1 
-# 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test1 2>&1 | { egrep "lost| at " || true; }
+valgrind: test1 
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test1 2>&1 | { egrep "lost| at " || true; }
 
 clean:
 	rm -f $(OBJECTS) *.o test* demo*

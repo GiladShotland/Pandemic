@@ -1,21 +1,34 @@
 #include "Virologist.hpp"
 #include "Color.hpp"
+#include <algorithm>
+#include <set>
 using namespace std;
 namespace pandemic
 {
     string Virologist::role() { return "Virologist"; }
     Virologist &Virologist::treat(City city)
     {
-        if (!check_the_card(city))
-        {
-            throw logic_error("You can't treat without having the card of the city!");
-        }
         if (this->board[city] == 0)
         {
-            throw logic_error("can't treat a healthy city!");
+            throw logic_error("cant treat healthy city");
         }
-        this->board[city] = has_cure(city) ? 0 : --this->board[city];
+
+        if (city != this->current_city && cards.count(city) == ZERO)
+        {
+            
+            throw logic_error("you dont have card");
+            
+        }
+        Color c = this->board.get_color_for_city(city);
+        if (this->board.has_cure(c))
+        {
+            this->board[city] = 0;
+        }
+        else
+        {
+            this->board[city]--;
+        }
+        cards.erase(city);
         return *this;
     }
-
 }

@@ -9,7 +9,7 @@ namespace pandemic
 
 {
 
-    unordered_map<City, vector<City>> Board::adj_list{
+    unordered_map<City, set<City>> Board::adj_list{
         {Algiers, {Madrid, Paris, Istanbul, Cairo}},
         {Atlanta, {Chicago, Miami, Washington}},
         {Baghdad, {Tehran, Istanbul, Cairo, Riyadh, Karachi}},
@@ -135,12 +135,8 @@ namespace pandemic
         outstream << " Research Stations built at : " << endl;
         for (const auto &p : board.have_research_station)
         {
-            const auto &key = p.first;
-            const auto &val = p.second;
-            if (p.second)
-            {
-                outstream << key << " ";
-            }
+
+            outstream << p << " ";
         }
 
         outstream << endl;
@@ -149,14 +145,13 @@ namespace pandemic
     //boolean method not allowed to change anything in the object
     bool Board::is_clean()
     {
-        for (uint i = ZERO; i < NUM_OF_CITIES; i++)
+        bool b = true;
+        for (auto const &p : levels)
         {
-            if (this->levels.at(i) > 0)
-            {
-                return false;
-            }
+            if(p != 0) {b = false;}
+            
         }
-        return true;
+        return b;
     }
     void Board::remove_cures()
     {
@@ -168,14 +163,20 @@ namespace pandemic
     }
     bool Board::has_cure(Color disease)
     {
-        return this->cures_founded.at(disease);
+        bool  x = this->cures_founded.at(disease);
+       
+        return  x;
+        
     }
     void Board::set_cure(Color disease)
     {
-        this->cures_founded.at(disease) = true;
+        unordered_map<Color, bool>::iterator it = cures_founded.find(disease);
+        it->second = true;
     }
-    bool Board::got_station(City city){
-        return this->have_research_station.at(city);
+    bool Board::got_station(City city)
+    {
+
+        return have_research_station.count(city) != ZERO;
     }
 
 }

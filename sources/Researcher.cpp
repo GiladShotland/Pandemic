@@ -6,14 +6,16 @@ namespace pandemic
     Researcher &Researcher::discover_cure(Color color)
     {
 
-        if (cards.size() < NUM_OF_CARDS_FOR_CURING)
+        if (this->board.has_cure(color))
         {
-            throw logic_error("you don't have enough cards from this color!");
+            return *this;
         }
-        for (uint i = ZERO; i < NUM_OF_CARDS_FOR_CURING; i++)
+        if (num_cards_in_color(color) < NUM_OF_CARDS_FOR_CURING)
         {
-            cards.erase(cards.begin());
+            throw logic_error("you dont have enough cards from this color");
         }
+        remove_n_cards(color, NUM_OF_CARDS_FOR_CURING);
+        this->board.set_cure(color);
         return *this;
     }
     string Researcher::role()

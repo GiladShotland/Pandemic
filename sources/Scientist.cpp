@@ -9,17 +9,20 @@ namespace pandemic
     }
     Scientist &Scientist::discover_cure(Color color)
     {
-        if (!has_station(this->current_city))
+        if (this->board.has_cure(color))
         {
-            throw logic_error("This city doesn't have a research stations!");
+            return *this;
         }
-        uint color_as_index = static_cast<uint>(color);
-
-        if (cards.size() < num_of_cards)
+        if (num_cards_in_color(color) < this->num_of_cards)
         {
-            throw logic_error("you don't have enough cards from this color!");
+            throw logic_error("you dont have enough cards");
         }
-        find_n_and_erase(color, num_of_cards);
+        if (!this->board.got_station(this->current_city))
+        {
+            throw logic_error("you dont have a research station in your city");
+        }
+        remove_n_cards(color, this->num_of_cards);
+        this->board.set_cure(color);
         return *this;
     }
 

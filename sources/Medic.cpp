@@ -1,86 +1,85 @@
 #include "Medic.hpp"
 #include "City.hpp"
-
+#include "Color.hpp"
 #include <vector>
 #include <algorithm>
 
 using namespace std;
 namespace pandemic
 {
-    void Medic::medic_arrived()
+    void Medic::medic_arrived(City city)
     {
-        City arrive_city = this->current_city;
-        if (has_cure(arrive_city))
+        Color c = this->board.get_color_for_city(city);
+        if (this->board.has_cure(c))
         {
-            this->board[arrive_city] = 0;
+            cout << "im in" << endl;
+            this->board[this->current_city] = ZERO;
         }
     }
-    Medic &Medic::fly_direct(City destination)
+    Medic &Medic::drive(City city)
     {
-        if (this->current_city == destination)
+        if (Board::areNeighbors(this->current_city, city))
         {
-            throw logic_error("can't drive to the same city!");
+            this->current_city = city;
+            medic_arrived(city);
+            return *this;
         }
-
-        set<City>::iterator iter = find_the_card(destination);
-        if (iter == cards.end())
+        throw logic_error("you dont have road to this city");
+    }
+    Medic &Medic::fly_direct(City city)
+    {
+        if (cards.find(city) == cards.end())
         {
-            throw logic_error("cant fly to that city - you don't have the card!");
+            throw logic_error("you dont have the card");
         }
-        cards.erase(destination);
-        this->current_city = destination;
-        this->medic_arrived();
+        if (this->current_city == city)
+        {
+            throw logic_error("cant fly to the same city");
+        }
+        this->current_city = city;
+        cards.erase(city);
+        medic_arrived(city);
         return *this;
     }
-    Medic &Medic::fly_shuttle(City destination)
+    Medic &Medic::fly_charter(City city)
     {
-        if (!has_station(destination) && !has_station(this->current_city))
+        if (cards.find(this->current_city) == cards.end())
         {
-            throw logic_error("Both of the cities don't have research stations!");
+            throw logic_error("you dont have the card");
         }
-        if (!has_station(destination))
-        {
-            throw logic_error("Your destination city doesn't have a research station!");
-        }
-        if (!has_station(this->current_city))
-        {
-            throw logic_error("Your current city doesn't have a research station!");
-        }
-        this->current_city = destination;
-        this->medic_arrived();
+        cards.erase(this->current_city);
+        this->current_city = city;
+        medic_arrived(city);
         return *this;
     }
-    Medic &Medic::fly_charter(City destination)
+    Medic &Medic::fly_shuttle(City city)
     {
-        if (this->current_city == destination)
+        if (!this->board.got_station(city))
         {
-            throw logic_error("can't fly to your city");
+            throw logic_error("this city don't have a research station");
         }
-        if (!check_the_card(this->current_city))
+        if (!this->board.got_station(this->current_city))
         {
-            throw logic_error("cant fly to that city - you don't have the card!");
+            throw logic_error("your city don't have a research station");
         }
-
-        remove_card(this->current_city);
-        this->current_city = destination;
-        this->medic_arrived();
-        return *this;
-    }
-    Medic &Medic::drive(City destination)
-    {
-        Player::drive(destination);
-        medic_arrived();
+        this->current_city = city;
+        medic_arrived(city);
         return *this;
     }
     Medic &Medic::treat(City city)
     {
         if (this->current_city != city)
         {
-            throw logic_error("cant treat the city when you're not in it!");
+            throw logic_error("you need to treat your own city");
         }
-        this->board[city] = 0;
+        if (this->board[city] == ZERO)
+        {
+            throw logic_error("you cant treat a healthy city");
+        }
+        this->board[city] = ZERO;
         return *this;
     }
+
     string Medic::role() { return "Medic"; }
 
 }

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <set>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 namespace pandemic
@@ -16,9 +17,9 @@ namespace pandemic
     {
 
     protected:
-        unordered_map<City, bool> have_research_station;
+        set<City> have_research_station;
         unordered_map<Color, bool> cures_founded;
-        static unordered_map<City, vector<City>> adj_list;
+        static unordered_map<City, set<City>> adj_list;
         static vector<Color> color_for_city;
 
     private:
@@ -32,10 +33,6 @@ namespace pandemic
             cures_founded.insert({Yellow, false});
             cures_founded.insert({Red, false});
             cures_founded.insert({Black, false});
-            for (uint i = ZERO; i < NUM_OF_CITIES; i++)
-            {
-                this->have_research_station.insert({static_cast<City>(i), false});
-            }
         };
         ~Board() {}
         friend class Player;
@@ -43,10 +40,28 @@ namespace pandemic
         int &operator[](uint city);
         bool is_clean();
         void remove_cures();
+        static bool areNeighbors(const City c1, const City c2)
+        {
+            if (c1 == c2)
+            {
+                return false;
+            }
+            return (adj_list[c1].count(c2) != ZERO);
+        }
+
         friend ostream &operator<<(ostream &outstream, const Board &board);
         bool has_cure(const Color disease);
         void set_cure(const Color disease);
         bool got_station(City city);
-    };
 
+        void update_station(City city)
+        {
+
+            have_research_station.insert(city);
+        }
+        Color get_color_for_city(City city)
+        {
+            return color_for_city.at(static_cast<uint>(city));
+        }
+    };
 };

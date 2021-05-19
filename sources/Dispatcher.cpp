@@ -12,9 +12,14 @@ namespace pandemic
         {
             throw logic_error("can't fly to the same city!");
         }
-        if (!has_station(city))
+        if (!this->board.got_station(this->current_city) )
         {
-            throw logic_error("city has no research station!");
+            if(cards.count(city) == ZERO){
+                throw logic_error("you dont have the card!");
+            }
+            this->current_city= city;
+            cards.erase(city);
+            return *this;
         }
         this->current_city = city;
         return *this;
